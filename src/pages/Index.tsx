@@ -1,66 +1,209 @@
-import { motion } from "framer-motion";
-import StorySection from "@/components/StorySection";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import PersonAtDesk from "@/components/PersonAtDesk";
+import WalkingPerson from "@/components/WalkingPerson";
+import CoupleHugging from "@/components/CoupleHugging";
 import QuoteBlock from "@/components/QuoteBlock";
-import HeartIcon from "@/components/HeartIcon";
-import ScrollIndicator from "@/components/ScrollIndicator";
-import DecorativeDivider from "@/components/DecorativeDivider";
 import couplePhoto from "@/assets/couple-photo.jpeg";
 
 const Index = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden scroll-smooth">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4">
+    <div ref={containerRef} className="min-h-screen bg-background overflow-x-hidden">
+      {/* Progress bar */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-accent z-50 origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+
+      {/* Scene 1: Title */}
+      <section className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          style={{ y: backgroundY }}
+          className="absolute inset-0 pointer-events-none"
+        >
+          <div className="absolute top-20 left-10 w-40 h-40 md:w-64 md:h-64 bg-accent/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-48 h-48 md:w-80 md:h-80 bg-primary/10 rounded-full blur-3xl" />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center max-w-4xl mx-auto"
+          transition={{ duration: 1.2 }}
+          className="text-center relative z-10"
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.2 }}
-            className="mb-8 md:mb-12"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="text-5xl md:text-7xl mb-6"
           >
-            <HeartIcon className="w-10 h-10 md:w-14 md:h-14 mx-auto" />
+            💕
           </motion.div>
-          
-          <h1 className="story-title text-foreground mb-6 md:mb-8">
-            Наша история
-          </h1>
-          
-          <p className="story-paragraph mx-auto text-center">
-            История о том, как два человека нашли друг друга там, 
-            где меньше всего ожидали...
-          </p>
+          <h1 className="story-title text-foreground mb-4">Наша история</h1>
+          <p className="text-muted-foreground text-lg md:text-xl">Листай вниз</p>
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="mt-8 text-3xl"
+          >
+            ↓
+          </motion.div>
         </motion.div>
-        
-        <ScrollIndicator />
-        
-        {/* Decorative elements */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{ delay: 0.8, duration: 1 }}
-          className="absolute top-20 left-10 w-32 h-32 md:w-48 md:h-48 bg-accent/10 rounded-full blur-3xl"
-        />
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.3 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-32 right-10 w-40 h-40 md:w-64 md:h-64 bg-accent/10 rounded-full blur-3xl"
-        />
       </section>
 
-      {/* Photo Section */}
-      <StorySection className="bg-secondary/30">
+      {/* Scene 2: He works at his desk */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 bg-secondary/20">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
-          className="photo-frame max-w-md md:max-w-lg lg:max-w-xl mx-auto"
+          className="text-center mb-8"
+        >
+          <span className="text-accent text-sm tracking-[0.3em] uppercase">Глава 1</span>
+          <h2 className="story-title text-foreground mt-2">Он работал...</h2>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <PersonAtDesk isMan={true} />
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+          className="story-paragraph text-center mt-8 max-w-md"
+        >
+          Обычный день в офисе. Ничего особенного...
+        </motion.p>
+      </section>
+
+      {/* Scene 3: She works at her desk */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-8"
+        >
+          <span className="text-accent text-sm tracking-[0.3em] uppercase">Глава 2</span>
+          <h2 className="story-title text-foreground mt-2">Она тоже работала...</h2>
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <PersonAtDesk isMan={false} flip={true} />
+        </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6 }}
+          className="story-paragraph text-center mt-8 max-w-md"
+        >
+          Никто из них не думал, что жизнь вот-вот изменится...
+        </motion.p>
+      </section>
+
+      {/* Scene 4: Quote */}
+      <section className="min-h-[70vh] flex items-center justify-center px-4 bg-card">
+        <QuoteBlock quote="Расстояния разделяют только тела. Душа всегда рядом." />
+      </section>
+
+      {/* Scene 5: They start walking towards each other */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 bg-secondary/20 overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="text-accent text-sm tracking-[0.3em] uppercase">Глава 3</span>
+          <h2 className="story-title text-foreground mt-2">И вдруг...</h2>
+        </motion.div>
+
+        <div className="flex items-end justify-center gap-8 md:gap-20 w-full max-w-4xl">
+          <WalkingPerson isMan={true} direction="right" />
+          <WalkingPerson isMan={false} direction="left" />
+        </div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="story-paragraph text-center mt-12 max-w-md"
+        >
+          Что-то начало меняться. Они шли навстречу друг другу...
+        </motion.p>
+      </section>
+
+      {/* Scene 6: Quote */}
+      <section className="min-h-[70vh] flex items-center justify-center px-4">
+        <QuoteBlock quote="Наносим добро и причиняем счастье" />
+      </section>
+
+      {/* Scene 7: They meet and hug */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 bg-secondary/30">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="text-accent text-sm tracking-[0.3em] uppercase">Глава 4</span>
+          <h2 className="story-title text-foreground mt-2">Влюбились до беспамятства</h2>
+        </motion.div>
+
+        <CoupleHugging />
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="story-paragraph text-center mt-12 max-w-md"
+        >
+          И стали очень счастливы ❤️
+        </motion.p>
+      </section>
+
+      {/* Scene 8: Final Quote */}
+      <section className="min-h-[70vh] flex items-center justify-center px-4 bg-card">
+        <QuoteBlock quote="Мы были вместе — я забыл весь мир..." />
+      </section>
+
+      {/* Scene 9: Real Photo */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mb-8"
+        >
+          <span className="text-accent text-sm tracking-[0.3em] uppercase">И это мы</span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, rotateY: -15 }}
+          whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+          className="photo-frame max-w-sm md:max-w-md lg:max-w-lg shadow-2xl"
         >
           <img 
             src={couplePhoto} 
@@ -68,127 +211,29 @@ const Index = () => {
             className="w-full h-auto object-cover"
           />
         </motion.div>
-      </StorySection>
 
-      {/* Story Part 1 - Meeting */}
-      <StorySection>
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-accent text-sm md:text-base tracking-[0.3em] uppercase mb-4 block"
-          >
-            Глава первая
-          </motion.span>
-          <h2 className="story-title text-foreground mb-8">
-            Там, где всё началось
-          </h2>
-          <p className="story-paragraph mx-auto text-center mb-6">
-            Мы встретились на работе. Обычный день, обычные дела. 
-            Никто из нас тогда не думал, что эта встреча изменит всё.
-          </p>
-          <p className="story-paragraph mx-auto text-center">
-            Мы даже представить не могли, что будем вместе. 
-            Жизнь приготовила для нас неожиданный поворот...
-          </p>
-        </div>
-      </StorySection>
-
-      {/* Quote 1 */}
-      <StorySection className="bg-card">
-        <div className="max-w-4xl mx-auto py-8 md:py-16">
-          <QuoteBlock quote="Расстояния разделяют только тела. Душа всегда рядом." />
-        </div>
-      </StorySection>
-
-      {/* Story Part 2 - Falling in Love */}
-      <StorySection>
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-accent text-sm md:text-base tracking-[0.3em] uppercase mb-4 block"
-          >
-            Глава вторая
-          </motion.span>
-          <h2 className="story-title text-foreground mb-8">
-            Влюбились до беспамятства
-          </h2>
-          <p className="story-paragraph mx-auto text-center mb-6">
-            А потом случилось то, чего никто не ожидал. 
-            Чувства накрыли с головой, и мир перевернулся.
-          </p>
-          <p className="story-paragraph mx-auto text-center">
-            Каждый день стал особенным. Каждая встреча — праздником. 
-            Мы поняли, что нашли своё счастье.
-          </p>
-          <DecorativeDivider />
-        </div>
-      </StorySection>
-
-      {/* Quote 2 */}
-      <StorySection className="bg-secondary/30">
-        <div className="max-w-4xl mx-auto py-8 md:py-16">
-          <QuoteBlock quote="Наносим добро и причиняем счастье" />
-        </div>
-      </StorySection>
-
-      {/* Story Part 3 - Happiness */}
-      <StorySection>
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.span
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-accent text-sm md:text-base tracking-[0.3em] uppercase mb-4 block"
-          >
-            Глава третья
-          </motion.span>
-          <h2 className="story-title text-foreground mb-8">
-            Очень счастливы
-          </h2>
-          <p className="story-paragraph mx-auto text-center mb-6">
-            Теперь мы вместе. И это — лучшее, что могло с нами случиться.
-          </p>
-          <p className="story-paragraph mx-auto text-center">
-            Каждый день мы пишем новую страницу нашей истории. 
-            И эта история будет длиться вечно.
-          </p>
-        </div>
-      </StorySection>
-
-      {/* Final Quote */}
-      <StorySection className="bg-card">
-        <div className="max-w-4xl mx-auto py-8 md:py-16">
-          <QuoteBlock quote="Мы были вместе — я забыл весь мир..." />
-        </div>
-      </StorySection>
-
-      {/* Footer */}
-      <section className="py-20 md:py-32 px-4">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center"
         >
-          <div className="flex justify-center gap-3 mb-8">
-            {[...Array(5)].map((_, i) => (
-              <motion.div
+          <div className="flex justify-center gap-2 mb-6">
+            {[...Array(7)].map((_, i) => (
+              <motion.span
                 key={i}
                 initial={{ opacity: 0, scale: 0 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.1 * i, type: "spring" }}
+                transition={{ delay: 0.7 + i * 0.1, type: "spring" }}
+                className="text-2xl"
               >
-                <HeartIcon className="w-4 h-4 md:w-5 md:h-5" animate={false} />
-              </motion.div>
+                ❤️
+              </motion.span>
             ))}
           </div>
-          <p className="font-serif text-xl md:text-2xl text-muted-foreground italic">
+          <p className="font-serif text-2xl md:text-3xl text-muted-foreground italic">
             С любовью, навсегда
           </p>
         </motion.div>
